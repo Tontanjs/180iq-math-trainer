@@ -5,16 +5,11 @@ import { LoginScreen } from './LoginScreen';
 import { Navbar } from './Navbar';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [authed, setAuthed] = useState<boolean | null>(null);
+  const [authed, setAuthed] = useState(false);
 
   useEffect(() => {
     setAuthed(isAuthed());
   }, []);
-
-  // Prevent flash while checking localStorage
-  if (authed === null) {
-    return <div className="min-h-screen bg-gradient-to-br from-[#0a1f35] via-[#0d2d4a] to-[#153B5C]" />;
-  }
 
   if (!authed) {
     return <LoginScreen onLogin={() => setAuthed(true)} />;

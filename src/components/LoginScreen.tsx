@@ -30,7 +30,7 @@ export function LoginScreen({ onLogin }: Props) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-[#0a1f35] via-[#0d2d4a] to-[#153B5C]">
+    <div className="relative min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-[#0a1f35] via-[#0d2d4a] to-[#153B5C]">
       {/* Background orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#0F75BC]/20 rounded-full blur-3xl" />
@@ -62,7 +62,7 @@ export function LoginScreen({ onLogin }: Props) {
                   value={username}
                   onChange={e => setUsername(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && pwRef.current?.focus()}
-                  className="w-full bg-white/8 border border-white/15 rounded-xl pl-10 pr-4 py-3 text-white placeholder-slate-500 outline-none focus:border-[#0F75BC] focus:ring-1 focus:ring-[#0F75BC] transition-all text-sm"
+                  className="w-full bg-white/10 border border-white/20 rounded-xl pl-10 pr-4 py-3 text-white placeholder-slate-500 outline-none focus:border-[#0F75BC] focus:ring-1 focus:ring-[#0F75BC] transition-all text-sm"
                   placeholder="Enter username"
                   autoComplete="username"
                   autoFocus
@@ -80,7 +80,7 @@ export function LoginScreen({ onLogin }: Props) {
                   type={showPw ? 'text' : 'password'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  className="w-full bg-white/8 border border-white/15 rounded-xl pl-10 pr-11 py-3 text-white placeholder-slate-500 outline-none focus:border-[#0F75BC] focus:ring-1 focus:ring-[#0F75BC] transition-all text-sm"
+                  className="w-full bg-white/10 border border-white/20 rounded-xl pl-10 pr-11 py-3 text-white placeholder-slate-500 outline-none focus:border-[#0F75BC] focus:ring-1 focus:ring-[#0F75BC] transition-all text-sm"
                   placeholder="Enter password"
                   autoComplete="current-password"
                 />
