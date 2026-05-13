@@ -1,12 +1,17 @@
 export type Operation = '+' | '-' | '×' | '÷' | 'mixed';
 
+export type NumberType = 'single' | 'double' | 'mixed';
+export type PlaceValue = 'ones' | 'tens' | 'hundreds' | 'thousands';
+
 export interface SessionSettings {
   digits: number;          // 1-6
   numTerms: 3 | 5 | 7 | 10;
   operations: Operation[];
-  timeLimit: number | null; // seconds
+  timeLimit: number | null; // per-question countdown (seconds)
   questionCount: number;
   mode: 'quick' | 'custom' | 'challenge';
+  numberType?: NumberType | null;
+  placeValue?: PlaceValue | null;
 }
 
 export interface Question {
@@ -28,6 +33,7 @@ export interface QuestionResult {
   correct: boolean;
   timeTaken: number;   // ms
   skipped: boolean;
+  timedOut?: boolean;
   steps: WorkingStep[];
 }
 

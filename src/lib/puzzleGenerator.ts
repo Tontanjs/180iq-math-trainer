@@ -99,7 +99,16 @@ function buildFormula(nums: number[], ops: string[], useFactorial: boolean): str
   return terms.map((t, i) => i < ops.length ? t + ops[i] : t).join('');
 }
 
-export function generatePuzzle(difficulty: PuzzleDifficulty): Puzzle {
+export type PuzzleNumberType = 'any' | 'single' | 'double' | 'mixed';
+
+function pickPuzzleNum(cfg: DifficultyConfig, numberType: PuzzleNumberType): number {
+  if (numberType === 'single') return randInt(1, 9);
+  if (numberType === 'double') return randInt(10, 99);
+  if (numberType === 'mixed') return Math.random() < 0.5 ? randInt(1, 9) : randInt(10, 99);
+  return randInt(cfg.min, cfg.max);
+}
+
+export function generatePuzzle(difficulty: PuzzleDifficulty, numberType: PuzzleNumberType = 'any'): Puzzle {
   const cfg = CONFIGS[difficulty];
 
   for (let attempt = 0; attempt < 500; attempt++) {
@@ -107,7 +116,7 @@ export function generatePuzzle(difficulty: PuzzleDifficulty): Puzzle {
 
     const numbers: number[] = [];
     for (let i = 0; i < count; i++) {
-      numbers.push(randInt(cfg.min, cfg.max));
+      numbers.push(pickPuzzleNum(cfg, numberType));
     }
 
     const ops: string[] = [];

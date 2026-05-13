@@ -6,7 +6,7 @@ import { ArrowLeft, Timer, Lightbulb, ChevronRight, RotateCcw, Home, Keyboard, G
 import { cn } from '@/lib/utils';
 import {
   generatePuzzle, validateFormula, realtimeEval,
-  Puzzle, ValidationResult, DIFFICULTY_LABELS,
+  Puzzle, ValidationResult, DIFFICULTY_LABELS, PuzzleNumberType,
 } from '@/lib/puzzleGenerator';
 import { savePuzzleResult, getPuzzleResults } from '@/lib/storage';
 import { PuzzleDifficulty, PuzzleResult } from '@/lib/types';
@@ -32,6 +32,7 @@ function formatTime(s: number): string {
 export default function PuzzlePage() {
   const [phase, setPhase] = useState<Phase>('select');
   const [difficulty, setDifficulty] = useState<PuzzleDifficulty>('normal');
+  const [numberType, setNumberType] = useState<PuzzleNumberType>('any');
   const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
 
   // Playing state
@@ -87,7 +88,7 @@ export default function PuzzlePage() {
   }, []);
 
   function startPuzzle(diff: PuzzleDifficulty) {
-    const p = generatePuzzle(diff);
+    const p = generatePuzzle(diff, numberType);
     setPuzzle(p);
     setDifficulty(diff);
     setElapsed(0);
@@ -221,6 +222,34 @@ export default function PuzzlePage() {
             )}
           </div>
         )}
+
+        <div>
+          <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">
+            Number Type
+          </h2>
+          <div className="flex gap-2 flex-wrap mb-6">
+            {([
+              { value: 'any',    label: 'Any',    sub: 'by difficulty' },
+              { value: 'single', label: 'Single', sub: '1–9' },
+              { value: 'double', label: 'Double', sub: '10–99' },
+              { value: 'mixed',  label: 'Mixed',  sub: '1–99' },
+            ] as { value: PuzzleNumberType; label: string; sub: string }[]).map(({ value, label, sub }) => (
+              <button
+                key={value}
+                onClick={() => setNumberType(value)}
+                className={cn(
+                  'px-3 py-2 rounded-lg text-sm font-semibold transition-all border',
+                  numberType === value
+                    ? 'bg-[#0F75BC] text-white border-[#0F75BC] shadow-sm'
+                    : 'bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:border-[#0F75BC] hover:text-[#0F75BC]',
+                )}
+              >
+                <span>{label}</span>
+                <span className="block text-xs font-normal opacity-70">{sub}</span>
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div>
           <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">

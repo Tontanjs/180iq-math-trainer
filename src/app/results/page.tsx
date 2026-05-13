@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { getSessions } from '@/lib/storage';
 import { TrainingSession } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, XCircle, SkipForward, Trophy, Target, Clock, Flame, RotateCcw, Home } from 'lucide-react';
+import { CheckCircle2, XCircle, SkipForward, Trophy, Zap, Clock, RotateCcw, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 function AnimatedCounter({ target, duration = 1500 }: { target: number; duration?: number }) {
@@ -54,6 +54,15 @@ export default function ResultsPage() {
   const correctCount = results.filter(r => r.correct).length;
   const skippedCount = results.filter(r => r.skipped).length;
   const wrongAnswers = results.filter(r => !r.correct && !r.skipped);
+
+  const correctResults = results.filter(r => r.correct);
+  const bestQuestion = correctResults.length
+    ? correctResults.reduce((a, b) => a.timeTaken < b.timeTaken ? a : b)
+    : null;
+  const badResults = results.filter(r => !r.correct);
+  const worstQuestion = badResults.length
+    ? badResults.reduce((a, b) => a.timeTaken > b.timeTaken ? a : b)
+    : null;
 
   const grade =
     accuracy >= 90 ? { label: 'Excellent!', color: 'text-green-600', emoji: '🏆' } :
@@ -116,6 +125,44 @@ export default function ResultsPage() {
           <p className="text-xs text-slate-400">Total</p>
         </div>
       </div>
+
+      {/* Best / Worst highlights */}
+      {(bestQuestion || worstQuestion) && (
+        <div className="grid grid-cols-2 gap-3">
+          {bestQuestion && (
+            <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-4">
+              <div className="flex items-center gap-1.5 mb-2">
+                <Zap className="h-4 w-4 text-emerald-500" />
+                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wide">Fastest Correct</span>
+              </div>
+              <code className="text-sm font-mono font-bold text-slate-800 dark:text-white block truncate">
+                {bestQuestion.question.display} = {bestQuestion.question.answer}
+              </code>
+              <div className="flex items-center gap-1 mt-1.5 text-emerald-600 dark:text-emerald-400">
+                <Clock className="h-3 w-3" />
+                <span className="text-xs font-semibold">{(bestQuestion.timeTaken / 1000).toFixed(1)}s</span>
+              </div>
+            </div>
+          )}
+          {worstQuestion && (
+            <div className="bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-800 rounded-xl p-4">
+              <div className="flex items-center gap-1.5 mb-2">
+                <Clock className="h-4 w-4 text-rose-400" />
+                <span className="text-xs font-semibold text-rose-500 dark:text-rose-400 uppercase tracking-wide">
+                  {worstQuestion.skipped ? 'Skipped' : worstQuestion.timedOut ? 'Timed Out' : 'Slowest Wrong'}
+                </span>
+              </div>
+              <code className="text-sm font-mono font-bold text-slate-800 dark:text-white block truncate">
+                {worstQuestion.question.display} = {worstQuestion.question.answer}
+              </code>
+              <div className="flex items-center gap-1 mt-1.5 text-rose-500 dark:text-rose-400">
+                <Clock className="h-3 w-3" />
+                <span className="text-xs font-semibold">{(worstQuestion.timeTaken / 1000).toFixed(1)}s</span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* All results with review */}
       <div>
